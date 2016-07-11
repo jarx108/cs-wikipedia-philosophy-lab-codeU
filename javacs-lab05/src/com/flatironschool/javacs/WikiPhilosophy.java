@@ -9,6 +9,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
 import org.jsoup.select.Elements;
+import java.util.HashSet;
 
 public class WikiPhilosophy {
 	
@@ -31,21 +32,41 @@ public class WikiPhilosophy {
 		
         // some example code to get you started
 
-		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		Elements paragraphs = wf.fetchWikipedia(url);
+		String url = "https://en.wikipedia.org/wiki/";
+		String page = "java_(programming_language)";
+		HashSet<String> set = new HashSet<String>();
+		int count = 20;
+		while(page.toLowerCase()!="philosophy") {
+			count--;
+			System.out.println(count);
+			if(count==0)break;
 
-		Element firstPara = paragraphs.get(0);
-		
-		Iterable<Node> iter = new WikiNodeIterable(firstPara);
-		for (Node node: iter) {
-			if (node instanceof TextNode) {
-				System.out.print(node);
+			Elements paragraphs = wf.fetchWikipedia(url + page);
+
+			Element firstPara = paragraphs.get(0);
+
+			Iterable<Node> iter = new WikiNodeIterable(firstPara);
+			for (Node node : iter) {
+				if (node instanceof TextNode) {
+					String s = node.toString();
+					//System.out.println(s);
+					if(s.matches("^[a-z].*")&&!s.toLowerCase().equals(page.toLowerCase())){
+						System.out.println("----"+s);
+						if(!set.add(s)){
+							//throw new UnsupportedOperationException("");
+						}
+
+						page = s;
+						set.add(s);
+						break;
+					}
+				}
 			}
-        }
-
+		}
         // the following throws an exception so the test fails
+
         // until you update the code
         String msg = "Complete this lab by adding your code and removing this statement.";
-        throw new UnsupportedOperationException(msg);
+        //throw new UnsupportedOperationException(msg);
 	}
 }
